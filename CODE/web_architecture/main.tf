@@ -1,4 +1,4 @@
-terrafrom {
+terraform {
    required_providers {
         aws = {
             source = "hashicorp/aws"
@@ -9,5 +9,5 @@ terrafrom {
 
 
 provider "aws" {
-    region = "ap-south-1"
+    region = var.aws_region
 }

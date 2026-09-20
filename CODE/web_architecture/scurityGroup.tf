@@ -1,7 +1,7 @@
 # --- ALB Security Group ---
 #Faces the public internet on port 80 (HTTP)
 
-resource "aws_secuirty_group" "alb" {
+resource "aws_security_group" "alb" {
         name        =  "${var.project_name}-alb-sg"
         description =  "Allow inbound Http traffic from the Internet"
         vpc_id      =  aws_vpc.main.id
@@ -44,7 +44,7 @@ resource "aws_security_group" "ec2" {
        from_port       = 80
        to_port         = 80
        protocol        = "tcp"
-       security_groups = [aws_secuirty_group.alb.id] # <- Key line: source is a SG
+       security_groups = [aws_security_group.alb.id] # <- Key line: source is a SG
 
     }
 
@@ -73,7 +73,7 @@ resource "aws_security_group" "ec2" {
 # Only trusts traffic FROM the EC2 security group on the MySQL port.
 # Nothing on the internet can reach the database directly.
 
-resource "aws_secuirty_group" "rds" {
+resource "aws_security_group" "rds" {
            name         = "${var.project_name}-rds-sg"
            description  = "Allow Mysql Only from EC2 instances"
            vpc_id       = aws_vpc.main.id
@@ -84,7 +84,7 @@ resource "aws_secuirty_group" "rds" {
             from_port        = 3306
             to_port          = 3306
             protocol         = "tcp"
-            security_groups  = [aws_secuirty_group.ec2.id]
+            security_groups  = [aws_security_group.ec2.id]
            }
 
            egress {
@@ -92,7 +92,7 @@ resource "aws_secuirty_group" "rds" {
             from_port        = 0
             to_port          = 0
             protocol         = "-1"
-            cidr_blocks      = ["0.0.0.0./0"]
+            cidr_blocks      = ["0.0.0.0/0"]
            }
 
            tags = { Name = "${var.project_name}-rds-sg" }
